@@ -10,7 +10,9 @@ The tree species have been planted have quite similiar DBH, except Arnorld Bucke
 While considering the median DBH of the trees. 
 ![tree_dbh_rplotly](https://cloud.githubusercontent.com/assets/14057932/24373113/4dea08ca-12fe-11e7-9a09-110ffb1ba52d.png)
 White ash, Australian pine, Norway Spruce are bigger than other trees in the area. 
+Please also see <a href = "http://rpubs.com/Geoyi/Tree_test_3">Tree DBH Median</a>
 
 ![map_trees](https://cloud.githubusercontent.com/assets/14057932/24373115/4decc6a0-12fe-11e7-8661-42d844001199.png)
 Interactive tree map will allow us to visulize the tree planting in the city. 
 
+Please also see <a href = "http://rpubs.com/Geoyi/Tree_test_3">Chicago interactive tree map</a>
