@@ -20,4 +20,4 @@ Please also see <a href = "http://rpubs.com/Geoyi/Tree_test_3">Tree DBH Median</
 ![map_trees](https://cloud.githubusercontent.com/assets/14057932/24373115/4decc6a0-12fe-11e7-8661-42d844001199.png)
 Interactive tree map will allow us to visulize the tree planting in the city. 
 
-Please also see <a href = "http://rpubs.com/Geoyi/Tree_test_3">Chicago interactive tree map</a>
+Please also see <a href = "http://rpubs.com/Geoyi/Tree_test_2">Chicago interactive tree map</a>
