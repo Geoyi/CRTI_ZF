@@ -1,3 +1,4 @@
 # CRTI Tree data exploring
 
-41 species from 26 genus
+We have 41 species from 26 genus. 
+
