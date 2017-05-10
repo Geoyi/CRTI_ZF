@@ -1,5 +1,5 @@
-setwd('/Users/yizhuangfang/Dropbox/ImageProcessing/CRTI_Tree_species_identification')
-list.files('/Users/yizhuangfang/Dropbox/ImageProcessing/CRTI_Tree_species_identification')
+setwd('..')
+list.files('..')
 
 library(dplyr)
 library(leaflet)
