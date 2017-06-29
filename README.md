@@ -1,5 +1,18 @@
 # CRTI Tree data exploring
 
+![model_1](https://user-images.githubusercontent.com/14057932/27666458-f5806138-5c41-11e7-9742-ec6c04557f12.png)
+
+![model_2](https://user-images.githubusercontent.com/14057932/27666459-f75f80b0-5c41-11e7-9bcc-3a05dd4dd337.png)
+
+![landuse_1990](https://user-images.githubusercontent.com/14057932/27666496-267c9bf8-5c42-11e7-9bcd-2d3641f57546.jpg)
+## Landuse map 1990
+![landuse_2010](https://user-images.githubusercontent.com/14057932/27666497-2907f214-5c42-11e7-8e85-77215447797c.jpg)
+## Landuse map 2010
+![model_3](https://user-images.githubusercontent.com/14057932/27666501-2dabb04e-5c42-11e7-94f9-1e9ca91d93b5.png)
+
+![model_4](https://user-images.githubusercontent.com/14057932/27666503-2f74a390-5c42-11e7-9a67-3e8bde2ffe90.png)
+
+![model_5](https://user-images.githubusercontent.com/14057932/27666504-31127bdc-5c42-11e7-93a5-a4e79305d5cb.png)
 
 
 We have 41 species from 26 genus. 
