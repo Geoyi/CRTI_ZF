@@ -1,5 +1,3 @@
-
-
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
@@ -30,9 +28,8 @@ inDir = os.getcwd()
 print(check_output(["ls", current_dir]).decode("utf8"))
 
 
-DF = pd.read_csv(inDir + '/train_wkt_v4.csv')
-GS = pd.read_csv(inDir + '/grid_sizes.csv', names=['ImageId', 'Xmax', 'Ymin'], skiprows=1)
-SB = pd.read_csv(os.path.join(inDir, 'sample_submission.csv'))
+DF = pd.read_csv(inDir + '/xxx.csv')
+GS = pd.read_csv(inDir + '/xxx.csv', names=['ImageId', 'Xmax', 'Ymin'], skiprows=1)
 ISZ = 160
 smooth = 1e-12
 
@@ -148,8 +145,6 @@ def jaccard_coef_int(y_true, y_pred):
     jac = (intersection + smooth) / (sum_ - intersection + smooth)
     return K.mean(jac)
 
-
-# In[18]:
 
 def stick_all_train():
     print "let's stick all imgs together"
