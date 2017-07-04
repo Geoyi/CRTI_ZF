@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import re
+from geopy.geocoders import Nominatim
 
 path = os.getcwd()+ '/'
 
@@ -75,5 +76,18 @@ for row in df_chi.House_details:
 df_chi['Built_ya'] =Built_ya
 df_chi['Roof'] = Roof
 
+###convert the datatype, and get rid of some string
+
 #This column is gonna use for geocoding
-df_chi['Adress_Geo'] = df_chi['Address'].map(str)+ ' ' + df_chi['City_C'] + ' ' + df_chi['State']
+
+New_Address = []
+for row in df.Address:
+     New_Address.append(re.sub("#\d+[A-Z]\w+|#\d+[A-Z]|#[A-Z]\d+|#\d+|#[A-Z]|", "", row))
+df['New_Address'] = New_Address
+
+df['Address_GEO'] = df['New_Address'] + ', ' + df['City'] + ', ' + df['Country']
+
+nom = Nominatim()
+##covert Address_GEO column to geo coordination, and it will take awhile
+df['Coordinates'] = df['Address_GEO'].apply(nom.geocode)
+
