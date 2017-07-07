@@ -27,9 +27,6 @@ from subprocess import check_output
 inDir = os.getcwd()
 print(check_output(["ls", current_dir]).decode("utf8"))
 
-
-DF = pd.read_csv(inDir + '/xxx.csv')
-GS = pd.read_csv(inDir + '/xxx.csv', names=['ImageId', 'Xmax', 'Ymin'], skiprows=1)
 ISZ = 160
 smooth = 1e-12
 
