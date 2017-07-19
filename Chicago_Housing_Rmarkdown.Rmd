@@ -1,0 +1,168 @@
+---
+title: "Chicago Housing Exploring"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(randomForest)
+library(Matrix)
+library(leaflet)
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(RColorBrewer)
+library(tidyr)
+# library(plyr)
+
+path <- setwd("/Users/yizhuangfang/Dropbox/Data_Incubator_2017/Zillow_WebScraping")
+df <- read.csv("Visulization_final_CSV_Chicago.csv")
+df <- subset(df, select = -ID)
+df$Current_Pr <- df$Current_Pr/1000
+df$GreenChange <- df$X09_Green_Sum_Area - df$X13_Green_Sum_Area
+df$CommercialChange <- df$X09_Commercial_Sum_Area - df$X13_Commercial_Sum_Area
+df$Greeness_300m <- df$X300_NDVI_Mean/max(df$X300_NDVI_Mean) *100
+df$Greeness_10m <- df$X10_NDVI_Mean/max(df$X10_NDVI_Mean) *100
+set.seed(123)
+# df$Current_Pr <- as.numeric(df$Current_Pr) 
+df[is.na(df)] <- 0
+df$SQFT <- as.numeric(df$SQFT)
+df$F_Type <- as.factor(df$F_Type)
+df <- plyr::rename(df, c("Current_Pr" = "Price", 
+                    "latitude" = "Latitude",
+                    "longitude" = "Longitude",
+                    "Zipcode" = "Zipcode",
+                    "Adress_Geo" = "Address", 
+                    "Beds" = "Beds",
+                    "Baths" = "Baths",
+                    "SQFT" = "SQFT",
+                    "Lot_Size" = "Lot_Size",
+                    "F_Type" = "Home_Type",
+                    "Built_ya" = "Built_Year",
+                    "Roof" = "Roof_Type",
+                    "community" = "Community",
+                    "X09_Commercial_Sum_Area" = "Commercial_Area_1990",
+                    "X01_Commercial_Sum_Area" = "Commercial_Area_2001",
+                    "X05_Commercial_Sum_Area" = "Commercial_Area_2005",
+                    "X10_Commercial_Sum_Area" = "Commercial_Area_2010",
+                    "X13_Commercial_Sum_Area" = "Commercial_Area_2017",
+                    "X09_Green_Sum_Area" = "Green_Area_1990",
+                    "X01_Green_Sum_Area" = "Green_Area_2001",
+                    "X05_Green_Sum_Area" = "Green_Area_2005",
+                    "X10_Green_Sum_Area" = "Green_Area_2010",
+                    "X13_Green_Sum_Area" = "Green_Area_2017",
+                    "X300_NDVI_Mean" = "Tree_Cover_300m",
+                    "X10_NDVI_Mean" = "Tree_Cover_10m",
+                    "GreenChange" = "GreenChange_1990_2017",
+                    "CommercialChange" = "CommercialChange_1990_2017",
+                   "Greeness_300m" = "Greeness_300m",
+                   "Greeness_10m" = "Greeness_10m"))
+
+
+df1 <- subset(df, Price >= 50 & Price <= 20000)
+df_sam <- sample(nrow(df1), 0.7 * nrow(df1))
+trian_df <- df1[df_sam, ]
+test_df <- df1[-df_sam, ]
+
+#sapply(df, class)
+
+rf_mod <- randomForest(Price ~ Beds + Baths + SQFT+ Home_Type + Built_Year + Commercial_Area_1990 + Commercial_Area_2001 + Commercial_Area_2005 + Commercial_Area_2010 + Commercial_Area_2017 + Green_Area_1990 + Green_Area_2001 + Green_Area_2005 + Green_Area_2010 + Green_Area_2017 + Tree_Cover_300m + Tree_Cover_10m + GreenChange_1990_2017 + CommercialChange_1990_2017 + Greeness_300m +Greeness_10m,
+  data = trian_df,
+  ntree = 1000,
+  importance = TRUE)
+
+importance <- importance(rf_mod)
+
+# varImportance <- data.frame(Variables = row.names(importance))
+
+varImportance <- data.frame(Variables = row.names(importance), Importance = round(importance,2))
+colnames(varImportance) <- c('Variables', 'Importance', 'Puricity')
+#predict_test <- predict(rf_mod, newdata = test_df)
+#table(predict_test, test_df$Current_Pr)
+
+rankImportance<- varImportance %>% mutate(Rank = paste0('#',dense_rank(desc(Importance)))) %>% mutate(Ranks = dense_rank(desc(Importance)))
+
+# colnames(rankImportance)[5] <- 'Ranks'
+# rankImportance <- varImportance %>% mutate(dense_rank(desc(importance$Importance..IncMSE)))
+# Create a rank variable based on importance
+#write.csv(rankImportance, "rankImportance.csv")
+#rankImportance <- read.csv("rankImportance.csv")
+
+#importance <- add_rownames(importance, "Variables")
+#New_rank_important <- merge(importance, rankImportance, by = "Variables")
+```
+
+
+Random Forest Modeling
+=====================================  
+    
+Column {data-width=1000}
+-------------------------------------
+### The importance of variables
+    
+```{r}
+library(plotly)
+p <- plot_ly(rankImportance, x = ~reorder(Variables, Ranks), y = ~Importance, type = 'bar', text = text,
+        marker = list(color = 'rgb(158,202,225)',
+                      line = list(color = 'rgb(8,48,107)',
+                                  width = 1.5))) %>%
+  layout(title = "Variables Importance",
+         xaxis = list(title = ""),
+         yaxis = list(title = ""))
+p
+#write plotly that could demonstrate the importance of valriables
+```
+   
+
+
+Model Building 
+=====================================
+
+![The model](/Users/yizhuangfang/Dropbox/Data_Incubator_2017/Zillow_WebScraping/Model_Introduction.png)
+
+
+
+Trees and hypothesis
+=====================================
+![Trees and hypothesis](/Users/yizhuangfang/Dropbox/Data_Incubator_2017/Zillow_WebScraping/Trees_Hyposithis.png)
+
+
+Land Use
+=====================================
+![Land Use Maps](/Users/yizhuangfang/Dropbox/Data_Incubator_2017/Zillow_WebScraping/Landuse_Series.png)
+
+
+
+Housing Raw Data {data-orientation=rows}
+=====================================
+
+Slider {data-height=120}
+-------------------------------------
+
+```{r}
+library(crosstalk)
+library(leaflet)
+library(DT)
+
+# Wrap data frame in SharedData
+
+sd <- SharedData$new(df[sample(nrow(df), 9931),])
+filter_slider("Price", "House Price (,000 USD)", sd, column=~Price, step=10, width=1000)
+
+```
+
+Raw Data {data-height=880} 
+-------------------------------------   
+
+```{r}
+# binpal <- colorBin("Reds", df$Home_Type, pretty = FALSE)
+# df$Home_Type <- factor(sample.int(5L, nrow(Home_Type), TRUE))
+factpal <- colorFactor(topo.colors(5), df$Home_Type)
+bscols(leaflet(sd) %>% addTiles() %>% fitBounds(-87.83,41.6,-87.52,42.0) %>% addCircleMarkers(~Longitude, ~Latitude, radius =2, color= ~factpal(Home_Type), popup = paste("Community:" ,df$Community, "Family Type:", df$Home_Type, sep = " ")),
+  datatable(sd, extensions="Scroller", style="bootstrap", class="compact", width="120%",
+    options=list(deferRender=TRUE, scrollY=300, scroller=TRUE))
+)
+```   
