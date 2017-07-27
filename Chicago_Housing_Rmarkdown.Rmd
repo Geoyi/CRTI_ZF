@@ -96,6 +96,33 @@ rankImportance<- varImportance %>% mutate(Rank = paste0('#',dense_rank(desc(Impo
 ```
 
 
+Housing agregation
+=====================================
+
+```{r}
+df2 <- subset(df, Baths <= 3.5 & Baths >1 & Price != 0)
+df2[is.na(df2)] <- 0
+df2$Home_Type_num <- as.numeric(df2$Home_Type)
+df2$Roof_Type_num <- as.numeric(df2$Roof_Type)
+df2$Community_num <- as.numeric(df2$Community)
+drop <- c('Zipcode', 'Address', 'Lot_Size', 'Home_Type', 'Roof_Type', 'Community')
+tokeep <- c("Latitude", "Longitude","Price", "Baths","Commercial_Area_1990", "Greeness_300m")
+df2 <- df2[, !(names(df2) %in% drop)]
+df3 <- df2[, (names(df2) %in% tokeep)]
+result3 <- kmeans(df3, 8)
+result <- kmeans(df2, 8)
+result2 <- kmeans(df2, 4)
+df2$kmeans <- result$cluster
+df2$kmeans2 <- result2$cluster
+df3$kmeans <- result3$cluster
+mycolor <- c("#f4814e", "#fbb35a", "#fdf289", "#bfe1e5", "	#90bdc3", "#94b0a2", "#677469", "#425563")
+factpal1 <- colorFactor(topo.colors(8), df3$kmeans)
+leaflet(df3) %>% addTiles() %>% fitBounds(-87.83,41.6,-87.52,42.0) %>% addCircleMarkers(~Longitude, ~Latitude, radius =2, color= ~factpal1(kmeans), popup = paste("Price" ,df3$Price, "K","Type:", df3$kmeans,"Greeness", df3$Greeness_300m, "Commercial Development",df3$Commercial_Area_1990, sep = " ")) %>% addLegend(position = "topright", className = "Chicago Property class",values =df3$kmeans, colors = df3$kmeans, labels =df3$kmeans ) %>% addMiniMap()
+# factpal2 <- colorFactor(topo.colors(4), df2$kmeans2)
+# leaflet(df2) %>% addTiles() %>% fitBounds(-87.83,41.6,-87.52,42.0) %>% addCircleMarkers(~Longitude, ~Latitude, radius =2, color= ~factpal2(kmeans2), popup = paste("Price" ,df2$Price, "Type:", df2$kmeans2, sep = " "))
+```
+
+
 Random Forest Modeling
 =====================================  
     
@@ -109,7 +136,7 @@ p <- plot_ly(rankImportance, x = ~reorder(Variables, Ranks), y = ~Importance, ty
         marker = list(color = 'rgb(158,202,225)',
                       line = list(color = 'rgb(8,48,107)',
                                   width = 1.5))) %>%
-  layout(title = "Variables Importance",
+  layout(title = "Importance of Variables",
          xaxis = list(title = ""),
          yaxis = list(title = ""))
 p
@@ -127,12 +154,12 @@ Model Building
 
 Trees and hypothesis
 =====================================
-![Trees and hypothesis](/Users/yizhuangfang/Dropbox/Data_Incubator_2017/Zillow_WebScraping/Trees_Hyposithis.png)
+![Trees and hypothesis](/Users/yizhuangfang/Dropbox/Data_Incubator_2017/Zillow_WebScraping/Trees_Hyposithis2.png)
 
 
 Land Use
 =====================================
-![Land Use Maps](/Users/yizhuangfang/Dropbox/Data_Incubator_2017/Zillow_WebScraping/Landuse_Series.png)
+![Land Use Maps](/Users/yizhuangfang/Dropbox/Data_Incubator_2017/Zillow_WebScraping/Landuse_Series2.png)
 
 
 
@@ -148,7 +175,6 @@ library(leaflet)
 library(DT)
 
 # Wrap data frame in SharedData
-
 sd <- SharedData$new(df[sample(nrow(df), 9931),])
 filter_slider("Price", "House Price (,000 USD)", sd, column=~Price, step=10, width=1000)
 
@@ -160,8 +186,8 @@ Raw Data {data-height=880}
 ```{r}
 # binpal <- colorBin("Reds", df$Home_Type, pretty = FALSE)
 # df$Home_Type <- factor(sample.int(5L, nrow(Home_Type), TRUE))
-factpal <- colorFactor(topo.colors(5), df$Home_Type)
-bscols(leaflet(sd) %>% addTiles() %>% fitBounds(-87.83,41.6,-87.52,42.0) %>% addCircleMarkers(~Longitude, ~Latitude, radius =2, color= ~factpal(Home_Type), popup = paste("Community:" ,df$Community, "Family Type:", df$Home_Type, sep = " ")),
+# factpal <- colorFactor(topo.colors(5), df$Home_Type)
+bscols(leaflet(sd) %>% addTiles() %>% fitBounds(-87.83,41.6,-87.52,42.0) %>% addCircleMarkers(~Longitude, ~Latitude, radius =2, color= "Purple", fillOpacity = 0.3, popup = paste("Community:" ,df$Community, "Family Type:", df$Home_Type, sep = " ")),
   datatable(sd, extensions="Scroller", style="bootstrap", class="compact", width="120%",
     options=list(deferRender=TRUE, scrollY=300, scroller=TRUE))
 )
