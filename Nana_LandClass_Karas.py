@@ -30,8 +30,6 @@ print(check_output(["ls", current_dir]).decode("utf8"))
 ISZ = 160
 smooth = 1e-12
 
-GS.head()
-
 
 def _convert_coordinates_to_raster(coords, img_size, xymax):
     # __author__ = visoft
